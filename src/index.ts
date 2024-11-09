@@ -4,15 +4,11 @@ import { generate } from '@genkit-ai/ai';
 import { configureGenkit } from '@genkit-ai/core';
 import { defineFlow, startFlowsServer } from '@genkit-ai/flow';
 import { googleAI } from '@genkit-ai/googleai';
-import { firebase } from '@genkit-ai/firebase';
-import {firebaseAuth} from "@genkit-ai/firebase/auth";
 import { gemini15Flash } from '@genkit-ai/googleai';
-import {noAuth, onFlow} from "@genkit-ai/firebase/functions";
 
 configureGenkit({
   plugins: [
     googleAI(),
-    firebase({projectId: "ai-story-generator-app"}),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
