@@ -17,6 +17,7 @@
     "@genkit-ai/ai": "^0.5.17",
     "@genkit-ai/core": "^0.5.17",
     "@genkit-ai/dotprompt": "^0.5.17",
+    "@genkit-ai/firebase": "^0.5.17",
     "@genkit-ai/flow": "^0.5.17",
     "@genkit-ai/googleai": "^0.5.17",
     "express": "^4.21.1",

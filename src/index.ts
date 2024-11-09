@@ -4,12 +4,15 @@ import { generate } from '@genkit-ai/ai';
 import { configureGenkit } from '@genkit-ai/core';
 import { defineFlow, startFlowsServer } from '@genkit-ai/flow';
 import { googleAI } from '@genkit-ai/googleai';
-
+import { firebase } from '@genkit-ai/firebase';
+import {firebaseAuth} from "@genkit-ai/firebase/auth";
 import { gemini15Flash } from '@genkit-ai/googleai';
+import {onFlow} from "@genkit-ai/firebase/functions";
 
 configureGenkit({
   plugins: [
     googleAI(),
+    firebase(),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
@@ -25,9 +28,12 @@ const StoryOutputSchema = z.object({
 
 
 // generate story
-export const generateStoryFlow = defineFlow(
+export const generateStoryFlow = onFlow(
   {
     name: 'generateStoryFlow',
+    authPolicy: firebaseAuth((user) => {
+       if (user.uid !== null) throw new Error("Authentication is required!");
+     }),
     inputSchema: z.object({
       category: z.string(),
       selectedOptions: z.array(
@@ -45,15 +51,14 @@ export const generateStoryFlow = defineFlow(
       Keep the tone [choose any: lighthearted, mysterious, adventurous, etc.], and aim for a story that feels meaningful or thought-provoking. Make sure the story has a clear beginning, middle, and end, leaving the user with a memorable impression. return the category as ${data.category}`,
       model: gemini15Flash,
       output: {
-            schema: StoryOutputSchema,
+        schema: StoryOutputSchema,
       },
       config: {
         temperature: 1,
       },
     });
-    const output: StoryOutput | null = llmResponse.output();
     
-    return output;
+    return llmResponse.output() as any;
   }
 );
 
