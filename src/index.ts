@@ -12,7 +12,7 @@ import {onFlow} from "@genkit-ai/firebase/functions";
 configureGenkit({
   plugins: [
     googleAI(),
-    firebase(),
+    firebase({projectId: "ai-story-generator-app"}),
   ],
   logLevel: 'debug',
   enableTracingAndMetrics: true,
@@ -28,12 +28,14 @@ const StoryOutputSchema = z.object({
 
 
 // generate story
-export const generateStoryFlow = onFlow(
+export const generateStoryFlow = defineFlow(
   {
     name: 'generateStoryFlow',
-    authPolicy: firebaseAuth((user) => {
-       if (user.uid !== null) throw new Error("Authentication is required!");
-     }),
+    authPolicy: (auth, input) => {
+        if (!auth) {
+          throw new Error('Authorization required.');
+        }
+      },
     inputSchema: z.object({
       category: z.string(),
       selectedOptions: z.array(
