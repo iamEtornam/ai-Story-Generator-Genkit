@@ -28,10 +28,9 @@ const StoryOutputSchema = z.object({
 
 
 // generate story
-export const generateStoryFlow = onFlow(
+export const generateStoryFlow = defineFlow(
   {
     name: 'generateStoryFlow',
-    authPolicy: noAuth(),
     inputSchema: z.object({
       category: z.string(),
       selectedOptions: z.array(
