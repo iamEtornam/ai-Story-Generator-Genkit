@@ -7,7 +7,7 @@ import { googleAI } from '@genkit-ai/googleai';
 import { firebase } from '@genkit-ai/firebase';
 import {firebaseAuth} from "@genkit-ai/firebase/auth";
 import { gemini15Flash } from '@genkit-ai/googleai';
-import {onFlow} from "@genkit-ai/firebase/functions";
+import {noAuth, onFlow} from "@genkit-ai/firebase/functions";
 
 configureGenkit({
   plugins: [
@@ -28,14 +28,10 @@ const StoryOutputSchema = z.object({
 
 
 // generate story
-export const generateStoryFlow = defineFlow(
+export const generateStoryFlow = onFlow(
   {
     name: 'generateStoryFlow',
-    authPolicy: (auth, input) => {
-        if (!auth) {
-          throw new Error('Authorization required.');
-        }
-      },
+    authPolicy: noAuth(),
     inputSchema: z.object({
       category: z.string(),
       selectedOptions: z.array(
